@@ -1,0 +1,50 @@
+Coefficients: (numerical Hessian approximate standard errors) 
+                                Estimate  Std. Error  z value  Pr(>|z|)
+(Intercept)                   2.79718266  0.01499684 186.5181 < 2.2e-16
+NumStoriesAboveGrade          0.01128875  0.00086185  13.0982 < 2.2e-16
+as.factor(ST)1_Net           -0.01645294  0.00583981  -2.8174 0.0048418
+as.factor(ST)2_Plus          -0.03260072  0.00601341  -5.4213 5.916e-08
+as.factor(ST)3_FullService   -0.00625144  0.00240435  -2.6001 0.0093209
+as.factor(BldgClass)2_ClassB -0.15603280  0.00725104 -21.5187 < 2.2e-16
+as.factor(BldgClass)3_ClassC -0.24976858  0.00877389 -28.4673 < 2.2e-16
+as.factor(SignQuarter)2005Q3 -0.01478803  0.01214561  -1.2176 0.2233905
+as.factor(SignQuarter)2005Q4  0.01437110  0.01196401   1.2012 0.2296760
+as.factor(SignQuarter)2006Q1 -0.01776802  0.01183252  -1.5016 0.1331939
+as.factor(SignQuarter)2006Q2 -0.00106343          NA       NA        NA
+as.factor(SignQuarter)2006Q3  0.02689497  0.01150372   2.3379 0.0193906
+as.factor(SignQuarter)2006Q4  0.03285076  0.01324029   2.4811 0.0130970
+as.factor(SignQuarter)2007Q1  0.05486622  0.01248427   4.3948 1.109e-05
+as.factor(SignQuarter)2007Q2  0.07331583  0.01216228   6.0281 1.659e-09
+as.factor(SignQuarter)2007Q3  0.11356321  0.01381164   8.2223 2.220e-16
+as.factor(SignQuarter)2007Q4  0.11162392  0.01479651   7.5439 4.552e-14
+as.factor(SignQuarter)2008Q1  0.09033257  0.01337519   6.7537 1.441e-11
+as.factor(SignQuarter)2008Q2  0.13320786  0.01468289   9.0723 < 2.2e-16
+as.factor(SignQuarter)2008Q3  0.13381685  0.01328410  10.0735 < 2.2e-16
+as.factor(SignQuarter)2008Q4  0.10624111  0.01435079   7.4032 1.330e-13
+as.factor(SignQuarter)2009Q1  0.10972811  0.01484959   7.3893 1.477e-13
+as.factor(SignQuarter)2009Q2  0.08756843  0.01519278   5.7638 8.223e-09
+as.factor(SignQuarter)2009Q3  0.07930904  0.01403873   5.6493 1.611e-08
+as.factor(SignQuarter)2009Q4  0.06475774  0.01390969   4.6556 3.231e-06
+as.factor(SignQuarter)2010Q1  0.06629601  0.01289843   5.1398 2.750e-07
+as.factor(SignQuarter)2010Q2  0.02595194  0.01294442   2.0049 0.0449765
+as.factor(SignQuarter)2010Q3  0.04651232  0.01398432   3.3260 0.0008809
+as.factor(SignQuarter)2010Q4  0.04405753  0.01271230   3.4657 0.0005288
+as.factor(SignQuarter)2011Q1  0.01354223  0.01335662   1.0139 0.3106322
+as.factor(SignQuarter)2011Q2  0.03975479  0.01253817   3.1707 0.0015207
+as.factor(SignQuarter)2011Q3  0.03378246  0.01351391   2.4998 0.0124254
+as.factor(SignQuarter)2011Q4  0.01688542  0.01344059   1.2563 0.2090071
+
+Rho: -0.80099
+Approximate (numerical Hessian) standard error: 0.013145
+    z-value: -60.936, p-value: < 2.22e-16
+Lambda: 0.99057
+Approximate (numerical Hessian) standard error: 0.00091666
+    z-value: 1080.6, p-value: < 2.22e-16
+
+LR test value: 5168.7, p-value: < 2.22e-16
+
+Log likelihood: -1616.523 for sac model
+ML residual variance (sigma squared): 0.063481, (sigma: 0.25196)
+Number of observations: 10591 
+Number of parameters estimated: 36 
+AIC: 3305, (AIC for lm: 8469.7)

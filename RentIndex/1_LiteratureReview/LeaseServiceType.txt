@@ -1,0 +1,31 @@
+
+
+1             Plus Cleaning					+char		9596
+2             + Elec & Clean                +e&c		11590
+4             Plus Electric                 +elec		145833
+5             Utilities & Char              +u&ch		11206
+6             Plus All Utilities            +util       152987
+7             Full Service Gross            fs          686052
+8             Industrial Gross              ig          136179
+9             Modified Gross                mg          362447
+10            Net                           n           58972
+11            Negotiable                    negot       384910
+12            Double Net                    nn          9352
+13            Triple Net                    nnn         1159252
+14            TBD                           tbd         391702
+15            Tenant Electric               te          22754
+16            Fully Repairing & Insuring    fri
+17            Internal Repairing Only       iro
+18            Internal Repairing & Insuring  NULL              
+
+*: Gross Lease (7,8,9) 
+property lease under which the lessor (landlord) agrees to pay all the expenses normally associated with ownership (insurance, taxes, utilities, repairs). An exception might be that the lessee (tenant) would be required to pay real estate taxes above a stipulated amount or to pay for certain special operating expenses (snow removal, grounds care in the case of a shopping center, or institutional advertising, for example). Gross leases are the most common type of lease contract and are typical arrangements for short-term tenancy. They normally contain no provision for periodic rent adjustments, nor are there preestablished renewal arrangements.
+
+*: Net Lease (10,12,13)
+In commercial real estate, a net lease requires the tenant to pay, in addition to rent, some or all of the property expenses which normally would be paid by the property owner (known as the "landlord" or "lessor"). These include expenses such as real estate taxes, insurance, maintenance, repairs, utilities and other items.
+
+The precise items that are to be paid by the tenant are usually specified in a written lease. For properties that are leased by more than one tenant, such as a shopping center, the expenses that are "passed through" to the tenants are usually prorated among the tenants based on the size (square footage) of the area occupied by each tenant. The term "net Lease" is distinguished from the term "gross lease". In a net lease, the property owner receives the rent "net" after the expenses that are to be passed through to tenants are paid. In a gross lease, the tenant pays a gross amount of rent, which the landlord can use to pay expenses or in any other way as the landlord sees fit.
+
+Single net lease: property tax + base rent
+double net lease: property tax + building insurance
+triple net lease: all real estate taxes + building insurance + maintenance
