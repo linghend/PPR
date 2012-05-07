@@ -1,6 +1,6 @@
 rm(list=ls())
 
-setwd("C:\\SamHe\\PPR\\RentIndex\\RCode\\ListingData")
+setwd("C:\\SamHe\\git\\PPR\\RentIndex\\RCode\\ListingData")
 
 library(sp)
 library(spdep)
@@ -194,6 +194,26 @@ lines(xri,ri3,'l',col=4)
 lines(xri,ri4,'l',col=5)
 lines(xri,ri5,'l',col=6)
 title("all formula")
+
+
+RDataxy=coordinates(cbind(RData$Longitude,RData$Latitude))
+RDatanb <- dnearneigh(RDataxy, 0,1,longlat = TRUE)
+RDatanbd <- nbdists(RDatanb, coords,longlat=T)
+RData_inv<-lapply(RDatanbd,function(x) (1/(x+1)))
+
+RDatalw_W=nb2listw(RDatanb, style="W",zero.policy=TRUE)
+RDatalw_B=nb2listw(RDatanb, style="B",zero.policy=TRUE)
+RDatalw_C=nb2listw(RDatanb, style="C",zero.policy=TRUE)
+RDatalw_S=nb2listw(RDatanb, style="S",zero.policy=TRUE)
+RDatalw_W_inv<-nb2listw(RDatanb, style="W",zero.policy=TRUE,glist=RData_inv)
+
+moran_RData<-moran.test(log(RData$AskingRate),listw=RDatalw_W,zero.policy=TRUE,randomisation=FALSE,alternative="two.sided")
+moran_RDatalm_W<-lm.morantest(resultLT5,listw=RDatalw_W,zero.policy=TRUE,alternative="two.sided")
+moran_RDatalm_B<-lm.morantest(resultLT5,listw=RDatalw_B,zero.policy=TRUE,alternative="two.sided")
+moran_RDatalm_C<-lm.morantest(resultLT5,listw=RDatalw_C,zero.policy=TRUE,alternative="two.sided")
+moran_RDatalm_S<-lm.morantest(resultLT5,listw=RDatalw_S,zero.policy=TRUE,alternative="two.sided")
+moran_RDatalm_inv<-lm.morantest(resultLT5,listw=RDatalw_W_inv,zero.policy=TRUE,alternative="two.sided")
+
 
 
 #end of plot control variable choice
