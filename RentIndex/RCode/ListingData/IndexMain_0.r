@@ -200,6 +200,7 @@ RDataxy=coordinates(cbind(RData$Longitude,RData$Latitude))
 RDatanb <- dnearneigh(RDataxy, 0,1,longlat = TRUE)
 RDatanbd <- nbdists(RDatanb, coords,longlat=T)
 RData_inv<-lapply(RDatanbd,function(x) (1/(x+1)))
+RData_res<-resid(resultLT5)
 
 RDatalw_W=nb2listw(RDatanb, style="W",zero.policy=TRUE)
 RDatalw_B=nb2listw(RDatanb, style="B",zero.policy=TRUE)
@@ -209,11 +210,58 @@ RDatalw_W_inv<-nb2listw(RDatanb, style="W",zero.policy=TRUE,glist=RData_inv)
 
 moran_RData<-moran.test(log(RData$AskingRate),listw=RDatalw_W,zero.policy=TRUE,randomisation=FALSE,alternative="two.sided")
 moran_RDatalm_W<-lm.morantest(resultLT5,listw=RDatalw_W,zero.policy=TRUE,alternative="two.sided")
+moran_RData_W<-moran.test(RData_res,listw=RDatalw_W,zero.policy=TRUE,alternative="two.sided")
+moran_RData_W<-moran.test(RData_res,listw=RDatalw_W,zero.policy=TRUE,alternative="two.sided",rank=TRUE)
+set.seed(1234)
+moran_RData_W_mc<-moran.mc(RData_res,listw=RDatalw_W,zero.policy=TRUE,alternative="greater",nsim=999)
+moran_RData_W_cor8<-sp.correlogram(neighbours=RDatanb,var=RData_res,order=3,method="I",style="W",randomisation=FALSE,zero.policy=TRUE)
+moran_RData_W_corD<-correlog(RDataxy,RData_res,method="Moran")
+
 moran_RDatalm_B<-lm.morantest(resultLT5,listw=RDatalw_B,zero.policy=TRUE,alternative="two.sided")
 moran_RDatalm_C<-lm.morantest(resultLT5,listw=RDatalw_C,zero.policy=TRUE,alternative="two.sided")
 moran_RDatalm_S<-lm.morantest(resultLT5,listw=RDatalw_S,zero.policy=TRUE,alternative="two.sided")
 moran_RDatalm_inv<-lm.morantest(resultLT5,listw=RDatalw_W_inv,zero.policy=TRUE,alternative="two.sided")
 
+Result_autolm_W<-spautolm(formuLT5, data=RData,listw=RDatalw_W,zero.policy=TRUE,method="MC")
+
+Result_autolm_W1<-spautolm(formuLT5, data=RData,listw=RDatalw_W,zero.policy=TRUE,method="MC",family="SAR",llprof=100)
+
+Result_autolm_W2<-spautolm(formuLT5, data=RData,listw=RDatalw_W,zero.policy=TRUE,method="Matrix")
+
+RData_res<-lm.LMtests(resultLT5,listw=RDatalw_W,test="all",zero.policy=TRUE)
+
+Result_lag_W<-lagsarlm(formuLT5,data=RData,listw=RDatalw_W,method="MC",zero.policy=TRUE)
+
+RData_W <- as(as_dgRMatrix_listw(RDatalw_W), "CsparseMatrix")
+trMatb <- trW(RData_W, type="mult")
+
+Result_mix_W<-sacsarlm(formuLT5,data=RData,listw=RDatalw_W,method="eigen",zero.policy=TRUE)
+
+Result_dubin_W<-lagsarlm(formuLT5,data=RData,listw=RDatalw_W,method="MC",zero.policy=TRUE,type="mixed")
+
+Result_err_W<-errorsarlm(formuLT5,data=RData,listw=RDatalw_W,method="MC",zero.policy=TRUE)
+
+Result_stsls_W<-stsls(formuLT5,data=RData,listw=RDatalw_W,zero.policy=TRUE)
+
+Result_stslsR_W<-stsls(formuLT5,data=RData,listw=RDatalw_W,zero.policy=TRUE,robust=TRUE)
+
+Result_GMerr_W<-GMerrorsar(formuLT5,data=RData,listw=RDatalw_W,zero.policy=TRUE)
+
+Result_GAM<-gam(log(AskingRate) ~ Quarters + ListAge + Floor + as.factor(BldgClass) + as.factor(ST) + QuarterOff + s(x,y),data=RData,weights=AvgSqft)
+
+bwG<-gwr.sel(formuLT5,data=RData,coords=RDataxy,gweight=gwr.Gauss,verbose=FALSE)
+
+#1/range(eigenw(RDatalw_W))
+
+
+
+Result_autolmCAR_W<-spautolm(formuLT5, data=RData,listw=RDatalw_W,zero.policy=TRUE,family="CAR",method="MC")
+
+ResultW_autolm_W<-spautolm(formuLT5, data=RData,weights=RData$AvgSqft,listw=RDatalw_W,zero.policy=TRUE,method="MC")
+
+ResultW_autolmCAR_W<-spautolm(formuLT5, data=RData,weights=RData$AvgSqft,listw=RDatalw_W,zero.policy=TRUE,family="CAR",method="MC")
+
+RData_res<-lm.LMtests(resultLT5,listw=RDatalw_W,test="all",zero.policy=TRUE)
 
 
 #end of plot control variable choice
