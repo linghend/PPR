@@ -34,17 +34,18 @@ with listage as
     and pce.EventYear >= 1754 
     and sl.DateOnMarket is not null
     and cast(cast(isNull(EventMonth,1) as varchar) + '/1/' + (cast(EventYear as varchar)) as datetime) <= sl.DateOnMarket
-  group by sl.SpaceForLeaseID,p.PropertyID	
+  group by sl.SpaceForLeaseID,p.PropertyID  
 )
 select
-  cast(datepart(yy,sl.DateOnMarket) as varchar(4))+'Q'+cast(DATEPART(Q,sl.DateOnMarket) as varchar(1)) as QuarterOn    
+  sl.SpaceForLeaseID
+  ,cast(datepart(yy,sl.DateOnMarket) as varchar(4))+'Q'+cast(DATEPART(Q,sl.DateOnMarket) as varchar(1)) as QuarterOn    
   ,cast(datepart(yy,sl.DateOffMarket) as varchar(4))+'Q'+cast(DATEPART(Q,sl.DateOffMarket) as varchar(1)) as QuarterOff
   ,(
     case sl.RateBasisID
-    when 2 then coalesce((RateLow+RateHigh)*0.5,RateLow,RateHigh)
+    when 2 then coalesce(RateLow,(RateLow+RateHigh)*0.5,RateHigh)
     when 1 then coalesce(RateLow,RateHigh)*12
     end
-  ) as AskingRate		
+  ) as AskingRate  	
   ,(
     case 
     when sl.ServiceTypeID in (13,12,10) then '1_Net'
@@ -55,6 +56,15 @@ select
   ) as ST
   ,(
     case p.BldgClassCode
+    when 'A' then '1_ClassA'
+    when 'B' then '2_ClassB'
+    when 'C' then '3_ClassC'
+    else '0_Unknown'
+    end
+  ) as pBldgClass
+  ,TDim.TimeDimID
+  ,(
+    case AF.BldgClassCode
     when 'A' then '1_ClassA'
     when 'B' then '2_ClassB'
     when 'C' then '3_ClassC'
@@ -80,6 +90,8 @@ select
   ,listage.LastBuiltOrRenovationDate
   ,DATEDIFF(yy,listage.LastBuiltOrRenovationDate,sl.DateOnMarket) as ListAge
   ,p.NumStoriesAboveGrade as TotalStories
+  ,p.PrimarySubmarketID
+  ,sm.SubmarketName
 from  [Enterprise].[dbo].[SpaceForLease] sl  
 inner join [Enterprise].[dbo].[Property] p
   on sl.PropertyID=p.PropertyID
@@ -99,16 +111,26 @@ inner join [Enterprise].[dbo].[FloorName] fn
   on pf.FloorNameID=fn.FloorNameID
 left join listage
   on sl.SpaceForLeaseID=listage.SpaceForLeaseID
+inner join [Enterprise].[dbo].[Submarket] sm
+  on p.PrimarySubmarketID=sm.SubMarketID
+inner join [EnterpriseAnalytic].[dbo].[TimeDim] TDim
+  on cast(datepart(yy,sl.DateOffMarket) as varchar(4))=TDim.Yr 
+	and cast(DATEPART(Q,sl.DateOffMarket) as varchar(1))=TDim.Qtr
+	and TDim.QuarterEndDate=TDim.TimeDimDate
+left join [EnterpriseAnalytic].[dbo].[AnalyticFact] AF
+  on AF.PropertyID=p.PropertyID and AF.TimeDimID=TDim.TimeDimID
 where 
   ad.CountryCode='USA' 
   and p.CoStarBldgTypeID=1
   and MonetaryUnitID=1
   and sl.RateBasisID in (1,2)
-  --and OffMarketReasonID =2
+  and OffMarketReasonID =2
   and sl.IsExecutiveSuiteFlag = 0
   and sl.IsLeaseTermMonthToMonthFlag=0
   and coalesce(RateLow,RateHigh) >0
   and coalesce(SqftMin,SqftMax)>0
+  and pprgeo.CBSAID=14460
+  and sm.SubmarketName is not null
 "
     channel<-odbcDriverConnect(myconn);
     Data<-sqlQuery(channel,mysql);

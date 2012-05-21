@@ -1,0 +1,8 @@
+"PropertyID","AskingRate","QuarterOff","BldgClass","ST","Quarters","ListAge","Floor","AvgSqft","Latitude","Longitude","LeaseTermTypeID","LeaseTermLow","LeaseTermHigh","SubmarketName","SpaceForLeaseID"
+9940,39,"2009Q3","1_ClassA","3_FullService",3,22,22,3595,42.3541759,-71.0557593,5,NA,NA,"Financial District",3649322
+85987,36,"2009Q3","1_ClassA","2_Between",2,12,8,4183,42.3553015,-71.0567776,5,NA,NA,"Financial District",3817445
+85987,36,"2009Q3","1_ClassA","2_Between",2,12,14,7586,42.3553015,-71.0567776,5,NA,NA,"Financial District",3817418
+85987,36,"2009Q3","1_ClassA","2_Between",2,12,8,5155,42.3553015,-71.0567776,5,NA,NA,"Financial District",3817438
+222064,38,"2009Q3","1_ClassA","2_Between",5,8,5,5803,42.3562499,-71.0564062,5,NA,NA,"Financial District",3162804
+222256,60,"2009Q3","1_ClassA","1_Net",2,25,1,4571,42.35501,-71.061302,5,NA,NA,"Financial District",3764942
+85988,40,"2009Q3","1_ClassA","2_Between",5,8,10,5859,42.3550167,-71.0566877,1,5,5,"Financial District",3090335

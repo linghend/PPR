@@ -31,6 +31,7 @@ DataClean=function(Data,CBSAID,Ptype)
   Quarters=(tempY2-tempY1)*4+(tempQ2-tempQ1)
   FData$Quarters=Quarters
   FData=subset(FData, as.character(FData$BldgClass)!='0_Unknown')
+  FData=subset(FData, as.character(FData$ST)!='0_Unknown')
   
   #Winsorization
   #--Winsorization: for AskingRate
@@ -59,12 +60,14 @@ DataClean=function(Data,CBSAID,Ptype)
   }else
   {
   }      
-  FData=FData[,c("PropertyID","AskingRate","QuarterOff","BldgClass","ST","Quarters","ListAge","FloorAbbreviation","AvgSqft","Latitude","Longitude")]
-  names(FData)[7]<-"Floor"
+  FData=FData[,c("PropertyID","AskingRate","QuarterOff","BldgClass","ST","Quarters","ListAge","FloorAbbreviation","AvgSqft","Latitude","Longitude","LeaseTermTypeID","LeaseTermLow","LeaseTermHigh","SubmarketName","SpaceForLeaseID")]
+  names(FData)[8]<-"Floor"
   
   FData$BldgClass=factor(FData$BldgClass)
   FData$ST=factor(FData$ST)
   FData$QuarterOff=factor(FData$QuarterOff)
+  FData$SubmarketName=factor(FData$SubmarketName)
+  
   
   return(FData)
 }

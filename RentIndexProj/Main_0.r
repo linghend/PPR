@@ -53,7 +53,10 @@ PtypeID <- c(5,6,2,11)
 # formuLT2=log(AskingRate)~as.factor(BldgClass)+as.factor(ST)+QuarterOff
 # formuLT3=log(AskingRate)~Floor+as.factor(BldgClass)+as.factor(ST)+QuarterOff
 # formuLT4=log(AskingRate)~ListAge+Floor+as.factor(BldgClass)+as.factor(ST)+QuarterOff
-formula=log(AskingRate)~Quarters+ListAge+Floor+BldgClass+ST+QuarterOff
+formula=log(AskingRate)~Floor+ST+SubmarketName+QuarterOff
+#formula=log(AskingRate)~ListAge+Floor+BldgClass+ST+LeaseTerm+LeaseTermRange+QuarterOff
+#formula="ListAge+Floor+BldgClass+ST+SubmarketName"
+
 
 # End of Parameters Definition
 ######################################################################
@@ -68,23 +71,106 @@ for (PTID in (1:4))
     
     #TData=subset(ListingDataRaw,ListingDataRaw$CBSAID==as.integer(CBSAID))
     TData<-ListingDataRaw[ListingDataRaw$CBSAID==CBSAID & ListingDataRaw$PropertyTypeID==PtypeID[PTID],]
+    #TData<-TData[TData$PrimarySubmarketID==675,]
     RData<-DataClean(TData,CBSAID,Ptypes[PTID])
-    if (nrow(RData)>1000)
+    RData$SubmarketName<-relevel(RData$SubmarketName,ref="Financial District")
+    RData1<-RData[RData$QuarterOff=='2008Q1',]
+    RData2<-RData[RData$QuarterOff=='2007Q4',]
+    RData3<-RData[RData$QuarterOff=='2008Q2',]
+    
+    RData5<-RData[RData$QuarterOff=='2009Q1',]
+    RData6<-RData[RData$QuarterOff=='2009Q2',]
+    RData7<-RData[RData$QuarterOff=='2009Q3',]   
+    
+    RData61<-RData6[RData6$SubmarketName=="Financial District" & RData6$BldgClass=="1_ClassA",]
+    
+    RData71<-RData7[RData7$SubmarketName=="Financial District" & RData7$BldgClass=="1_ClassA",]
+    
+    RData4<-RData[RData$SubmarketName=="Financial District",]
+    RData41<RData4[RData4$QuarterOff=='2008Q1',]
+    
+    #RData<-RData[RData$SubmarketName=="Financial District",]
+    #RData<-RData[RData$BldgClass=="1_ClassA",]
+    
+    #RData<-subset(RData,RData$LeaseTermTypeID>=1 & RData$LeaseTermTypeID<=3)
+    #TLeaseTerm<-c(1,12,365)
+    #RData$LeaseTerm<-RData1$LeaseTermLow/TLeaseTerm[RData1$LeaseTermTypeID]
+    #RData$LeaseTermRange<-(RData1$LeaseTermHigh-RData1$LeaseTermLow)/TLeaseTerm[RData1$LeaseTermTypeID]
+    
+#     ROffQStart<-min(as.character(RData$QuarterOff))
+#     ROffQEnd<-max(as.character(RData$QuarterOff))    
+#     
+#     tempY1<-as.integer(substr(as.character(ROffQStart),1,4))
+#     tempY2<-as.integer(substr(as.character(ROffQEnd),1,4))
+#     tempQ1<-as.integer(substr(as.character(ROffQStart),6,6))
+#     tempQ2<-as.integer(substr(as.character(ROffQEnd),6,6))
+#     RQSpan<-(tempY2-tempY1)*4+(tempQ2-tempQ1)+1
+#     
+#     RQS<-(tempQ1:(tempQ1+RQSpan-1))
+#     RQQ<-RQS%%4
+#     RQQ[RQQ==0]<-4
+#     RQY<-floor((RQS-1)/4)+tempY1
+#     RQT<-paste('Y',paste(RQY,RQQ,sep="Q"),sep="")
+#     FRQT=paste(RQT,collapse=' + ')
+#     RData[,RQT]<-0
+#     
+#     for (i in 1:nrow(RData))
+#     {
+#       NQ=4
+#       NYear=as.integer(substring(as.character(RData$QuarterOff[i]),1,4))
+#       NQuarter=as.integer(substring(as.character(RData$QuarterOff[i]),6,6))      
+#       if (NYear==2011)
+#       {
+#         NQ=4-NQuarter+1
+#         QuarterOffEnd="2011Q4"
+#       }
+#       else
+#       {
+#         if (NQuarter==1)
+#         {
+#           QuarterOffEnd=paste(as.character(NYear),'4',sep='Q')
+#         }
+#         else
+#         {
+#           QuarterOffEnd=paste(as.character(NYear+1),as.character(NQuarter-1),sep='Q')
+#         }
+#       }
+      
+      RData[i,RQT]<-(substr(RQT,2,7)>=as.character(RData$QuarterOff[i]) & substr(RQT,2,7) <=QuarterOffEnd)/NQ
+    }  
+    
+#List Level Simple Average    
+    Result_Avg_EW<-aggregate(RData$AskingRate,by=list(RData$QuarterOff),mean)
+    Result_Avg_SW<-aggregate(RData$AskingRate*RData$AvgSqft,by=list(RData$QuarterOff),sum)
+    Result_Avg_SW1<-aggregate(RData$AvgSqft,by=list(RData$QuarterOff),sum)
+    Result_Avg_SW[,"x"]<-Result_Avg_SW[,"x"]/Result_Avg_SW1[,"x"]
+    Result_Counts<-as.data.frame(table(RData$QuarterOff))
+    
+    ROffQStart<-min(as.character(RData$QuarterOff))
+    ROffQEnd<-max(as.character(RData$QuarterOff))    
+    RNQ<-length(levels(RData$QuarterOff))
+    RNQMin<-min(table(RData$QuarterOff))
+    
+    if (nrow(RData)>=1000)
     {
       #RData$QuarterOff=relevel (RData$QuarterOff, ref=OffQBase)
+      formulaT=as.formula(paste("log(AskingRate) ~ ",paste(formula,FRQT,sep=' + ')))
       resultlm=lm(formula,data=RData)
       RDataxy=coordinates(cbind(RData$Longitude,RData$Latitude))
-      t1=Sys.time()
-      RDatanb <- dnearneigh(RDataxy, 0,1,longlat = TRUE)
+      RDatanb <- dnearneigh(RDataxy, -1,2,longlat = TRUE)
+      RDatanbd <- nbdists(RDatanb, RDataxy,longlat=T)
+      RDatanbd_inv<-lapply(RDatanbd,function(x) (1/(1+9*x)))
+      #RDatanbd_invS<-lapply(RDatanbd_inv,sum)
+      RDatanbd_inv1<-mapply("/",RDatanbd_inv,RData$AvgSqft)
       #RDatanbd <- nbdists(RDatanb, coords,longlat=T)
-      RDatalw_W=nb2listw(RDatanb, style="W",zero.policy=TRUE)
+      #RDatalw_W=nb2listw(RDatanb, style="W",zero.policy=TRUE)
+      RDatalw_W=nb2listw(RDatanb, style="W",zero.policy=TRUE,glist=RDatanbd_inv1)
       #moran_RDatalm_W<-lm.morantest(resultlm,listw=RDatalw_W,zero.policy=TRUE,alternative="two.sided")
       Result_err_W<-errorsarlm(formula,data=RData,listw=RDatalw_W,method="MC",zero.policy=TRUE)
       
-      ROffQStart<-min(as.character(RData$QuarterOff))
-      ROffQEnd<-max(as.character(RData$QuarterOff))
+      #Result_err_W<-spautolm(formula,data=RData,listw=RDatalw_W,weights=RData$AvgSqft,method="MC",zero.policy=TRUE)
       
-      RNQ<-length(levels(RData$QuarterOff))
+      
       
       RQcoeff<-tail(Result_err_W$coefficient,RNQ-1)
       RQse<-tail(Result_err_W$rest.se,RNQ-1)
@@ -103,7 +189,7 @@ for (PTID in (1:4))
       
       
     }else{
-      print(sprintf("Only %i usable records avaiable. Ignore analysis!",nrow(RData)))
+      print(sprintf("There are only %i quarterly minimum usable records avaiable. Ignore analysis!",RNQMin))
     }
   }
 }
